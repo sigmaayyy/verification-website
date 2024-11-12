@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verification</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #121212; color: #ffffff; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+    .container { width: 300px; padding: 20px; text-align: center; background: #282828; border-radius: 10px; }
+    .section { margin-bottom: 20px; }
+    .textbox { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #555; background: #333; color: #fff; }
+    .button { background: #4CAF50; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer; }
+    .button:hover { background: #45a049; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="verifySection" class="section">
+      <h2>Enter User ID To Verify</h2>
+      <input type="text" id="userIdInput" class="textbox" placeholder="Enter User ID">
+      <button onclick="verifyUser()" class="button">Verify</button>
+    </div>
+
+    <div id="getIdSection" class="section">
+      <h2>Get User ID</h2>
+      <input type="text" id="usernameInput" class="textbox" placeholder="Enter Username">
+      <button onclick="getUserId()" class="button">Get ID</button>
+    </div>
+
+    <div id="successMessage" style="display: none;">
+      <h2>Successfully Verified!</h2>
+    </div>
+  </div>
+
+  <script>
+    async function verifyUser() {
+      const userId = document.getElementById("userIdInput").value;
+      if (!userId) return alert("Please enter a User ID to verify.");
+      
+      try {
+        const response = await fetch('/verify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId }) });
+        if (response.ok) {
+          document.getElementById("verifySection").style.display = 'none';
+          document.getElementById("getIdSection").style.display = 'none';
+          document.getElementById("successMessage").style.display = 'block';
+        } else {
+          alert("Verification failed.");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    async function getUserId() {
+      const username = document.getElementById("usernameInput").value;
+      if (!username) return alert("Please enter a Username to get User ID.");
+      
+      try {
+        const response = await fetch(`/get-user-id?username=${username}`);
+        const data = await response.json();
+        alert(`User ID for ${username} is ${data.userId}`);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  </script>
+</body>
+</html>
